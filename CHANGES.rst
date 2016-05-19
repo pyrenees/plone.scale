@@ -15,7 +15,8 @@ New features:
 
 Bug fixes:
 
-- *add item here*
+- Fix tests to pass on Python 3.5
+  [datakurre]
 
 
 1.5.0 (2016-05-18)

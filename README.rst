@@ -1,6 +1,9 @@
 Introduction
 ============
 
+.. image:: https://secure.travis-ci.org/pyrenees/plone.scale.png
+   :target: http://travis-ci.org/pyrenees/plone.scale
+
 This package contains image scaling logic for use in Zope environments. It
 supports Zope 2, grok and other systems build on using the Zope ToolKit (ZTK).
 
