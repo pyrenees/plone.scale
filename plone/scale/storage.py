@@ -1,7 +1,10 @@
 # -*- coding: utf-8 -*-
 from persistent.dict import PersistentDict
 from plone.scale.interfaces import IImageScaleFactory
-from UserDict import DictMixin
+try:
+    from collections import MutableMapping
+except ImportError:
+    from UserDict import DictMixin as MutableMapping
 from uuid import uuid4
 from ZODB.POSException import ConflictError
 from zope.annotation import IAnnotations
@@ -102,7 +105,7 @@ class ScalesDict(PersistentDict):
 
 
 @implementer(IImageScaleStorage)
-class AnnotationStorage(DictMixin):
+class AnnotationStorage(MutableMapping):
     """ An abstract storage for image scale data using annotations and
         implementing :class:`IImageScaleStorage`. Image data is stored as an
         annotation on the object container, i.e. the image. This is needed
@@ -255,3 +258,6 @@ class AnnotationStorage(DictMixin):
 
     def clear(self):
         self.storage.clear()
+
+    def __len__(self):
+        return len(tuple(self.keys()))

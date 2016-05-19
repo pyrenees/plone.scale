@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from setuptools import find_packages
 from setuptools import setup
+import sys
 
 version = '1.5.1.dev0'
 readme = open('README.rst').read().replace(':class:', '').replace(':mod:', '')
@@ -10,12 +11,23 @@ STORAGE_REQUIREMENTS = [
     'zope.annotation',
     'zope.component',
     'zope.interface',
-    'Persistence',
 ]
+
+if sys.version_info >= (3,):
+    STORAGE_REQUIREMENTS += [
+        'persistent',
+        'ZODB'
+    ]
+else:
+    STORAGE_REQUIREMENTS += [
+        'Persistence',
+        'ZODB3'
+    ]
 
 TESTS_REQUIREMENTS = [
     'Pillow',
-    'plone.testing'
+    'plone.testing',
+    'zope.configuration',
 ]
 
 SPHINX_REQUIREMENTS = [

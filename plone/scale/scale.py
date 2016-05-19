@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from cStringIO import StringIO
+from io import BytesIO
 
 import PIL.Image
 import PIL.ImageFile
@@ -29,8 +29,8 @@ def scaleImage(image, width=None, height=None, direction="down",
     The `width`, `height`, `direction` parameters will be passed to
     :meth:`scalePILImage`, which performs the actual scaling.
     """
-    if isinstance(image, str):
-        image = StringIO(image)
+    if isinstance(image, bytes):
+        image = BytesIO(image)
     image = PIL.Image.open(image)
 
     # When we create a new image during scaling we loose the format
@@ -42,7 +42,7 @@ def scaleImage(image, width=None, height=None, direction="down",
     image = scalePILImage(image, width, height, direction)
 
     if result is None:
-        result = StringIO()
+        result = BytesIO()
         image.save(
             result,
             format,

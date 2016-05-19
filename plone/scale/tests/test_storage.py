@@ -3,11 +3,22 @@ from operator import delitem
 from operator import itemgetter
 from operator import setitem
 from plone.testing import zca
+from plone.scale.storage import AnnotationStorage
 from unittest import TestCase
+import sys
+import types
 
 
 class _DummyContext(object):
     pass
+
+
+class TestStorage(AnnotationStorage):
+    storage = None
+
+    def __init__(self, context, modified=None):
+        super(TestStorage, self).__init__(context, modified)
+        self.storage = {}
 
 
 class AnnotationStorageTests(TestCase):
@@ -38,10 +49,8 @@ class AnnotationStorageTests(TestCase):
 
     @property
     def storage(self):
-        from plone.scale.storage import AnnotationStorage
-        storage = AnnotationStorage(_DummyContext())
+        storage = TestStorage(_DummyContext())
         storage.modified = lambda: 42
-        storage.storage = {}
         return storage
 
     def factory(self, **kw):
@@ -157,7 +166,10 @@ class AnnotationStorageTests(TestCase):
     def testKeys(self):
         storage = self.storage
         storage.storage.update(one=None, two=None)
-        self.failUnless(isinstance(storage.keys(), list))
+        if sys.version_info >= (3,):
+            self.failUnless(isinstance(storage.keys(), {}.keys().__class__))
+        else:
+            self.failUnless(isinstance(storage.keys(), list))
         self.assertEqual(set(storage.keys()), set(['one', 'two']))
 
     def testNegativeHasKey(self):

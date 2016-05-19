@@ -1,4 +1,4 @@
-from cStringIO import StringIO
+from io import BytesIO
 from plone.scale.scale import scaleImage
 from plone.scale.tests import TEST_DATA_LOCATION
 from unittest import TestCase
@@ -7,16 +7,16 @@ import os.path
 import PIL.Image
 
 
-PNG = open(os.path.join(TEST_DATA_LOCATION, "logo.png")).read()
-GIF = open(os.path.join(TEST_DATA_LOCATION, "logo.gif")).read()
-CMYK = open(os.path.join(TEST_DATA_LOCATION, "cmyk.jpg")).read()
+PNG = open(os.path.join(TEST_DATA_LOCATION, "logo.png"), mode="rb").read()
+GIF = open(os.path.join(TEST_DATA_LOCATION, "logo.gif"), mode="rb").read()
+CMYK = open(os.path.join(TEST_DATA_LOCATION, "cmyk.jpg"), mode="rb").read()
 
 
 class ScalingTests(TestCase):
 
     def testNewSizeReturned(self):
         (imagedata, format, size) = scaleImage(PNG, 42, 51, "down")
-        input = StringIO(imagedata)
+        input = BytesIO(imagedata)
         image = PIL.Image.open(input)
         self.assertEqual(image.size, size)
 
@@ -25,7 +25,7 @@ class ScalingTests(TestCase):
 
     def testScaledCMYKIsRGB(self):
         (imagedata, format, size) = scaleImage(CMYK, 42, 51, "down")
-        input = StringIO(imagedata)
+        input = BytesIO(imagedata)
         image = PIL.Image.open(input)
         self.assertEqual(image.mode, "RGB")
 
@@ -86,7 +86,7 @@ class ScalingTests(TestCase):
 
     def testResultBuffer(self):
         img1 = scaleImage(PNG, 84, 103)[0]
-        result = StringIO()
+        result = BytesIO()
         img2 = scaleImage(PNG, 84, 103, result=result)[0]
         self.assertEqual(result, img2)      # the return value _is_ the buffer
         self.assertEqual(result.getvalue(), img1)   # but with the same value
